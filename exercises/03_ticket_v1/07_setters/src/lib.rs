@@ -3,6 +3,8 @@
 //   Even better, extract that logic and reuse it in both places. You can use
 //   private functions or private static methods for that.
 
+use std::fmt::format;
+
 pub struct Ticket {
     title: String,
     description: String,
@@ -11,21 +13,14 @@ pub struct Ticket {
 
 impl Ticket {
     pub fn new(title: String, description: String, status: String) -> Ticket {
-        if title.is_empty() {
-            panic!("Title cannot be empty");
-        }
-        if title.len() > 50 {
-            panic!("Title cannot be longer than 50 bytes");
-        }
-        if description.is_empty() {
-            panic!("Description cannot be empty");
-        }
-        if description.len() > 500 {
-            panic!("Description cannot be longer than 500 bytes");
-        }
-        if status != "To-Do" && status != "In Progress" && status != "Done" {
-            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
-        }
+
+        Self::valid_empty(&title, "Title");
+        Self::valid_empty(&description, "Description");
+
+        Self::validate_capacity(&title, 50, "Title");
+        Self::validate_capacity(&description, 500, "Description");
+
+        Self::validate_status(&status);
 
         Ticket {
             title,
@@ -44,6 +39,44 @@ impl Ticket {
 
     pub fn status(&self) -> &String {
         &self.status
+    }
+
+    pub fn set_title(&mut self, new_title: String) {
+        Self::valid_empty(&new_title, "Title");
+
+        Self::validate_capacity(&new_title, 50, "Title");
+
+        self.title = new_title;
+    }
+
+    pub fn set_description(&mut self, new_description: String) {
+        Self::valid_empty(&new_description, "Description");
+
+        Self::validate_capacity(&new_description, 500, "Description");
+        self.description = new_description;
+    }
+
+    pub fn set_status(&mut self, new_status: String) {
+        Self::validate_status(&new_status);
+        self.status = new_status;
+    }
+
+    fn valid_empty(text: &str, param_name: &str) {
+        if text.trim().is_empty() {
+            panic!("{}", format!("{} cannot be empty", param_name));
+        }
+    }
+
+    fn validate_capacity(text: &str, capacity: usize, param_name: &str) {
+        if text.len() > capacity {
+            panic!("{param_name} cannot be longer than {capacity} bytes");
+        }
+    }
+
+    fn validate_status(text: &str) {
+        if text != "To-Do" && text != "In Progress" && text != "Done" {
+            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
+        }
     }
 }
 
