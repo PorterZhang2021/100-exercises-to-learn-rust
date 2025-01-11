@@ -8,6 +8,20 @@
 #[cfg(test)]
 mod tests {
     use super::*;
+    struct Order {
+        price: u32,
+        quantity: u32,
+    }
+
+    impl Order {
+        fn is_available(self) -> bool{
+            if self.quantity > 0 {
+                true
+            } else {
+                false
+            }
+        }
+    }
 
     #[test]
     fn test_order_is_available() {
