@@ -3,8 +3,6 @@
 //   Even better, extract that logic and reuse it in both places. You can use
 //   private functions or private static methods for that.
 
-use std::fmt::format;
-
 pub struct Ticket {
     title: String,
     description: String,
